@@ -1,0 +1,39 @@
+class KarpRabin {
+  private final int PRIME = 101;
+
+  private double calculateHash(String str) {
+    double hash = 0;
+    for(int i=0; i < str.length(); i++) {
+      hash += str.charAt(i) * Math.pow(PRIME, i); // character at index i  * pow(prime , i)
+    }
+    return hash;
+  }
+
+  private double updateHash(double prevHash, char oldChar, char newChar, int m) {
+    double newHash = (prevHash - oldChar) / PRIME; // prev hash se old character minus kar ke divide by prime
+    newHash = newHash + newChar * Math.pow(PRIME, m - 1); // fir naya char * pow(prime, patternlength -1 )
+    return newHash;
+  }
+
+  public void search(String text, String pattern) {
+    int m = pattern.length();
+    double patternHash = calculateHash(pattern); // calculate hash of pattern
+    double textHash = calculateHash(text.substring(0, m));  // hash of first m characters of string
+
+    for(int i=0; i<= text.length() - m; i++) {
+      if(textHash == patternHash) { // agar pattern hash and text hash match kar raha hai to index mil gaya ek
+        System.out.println("Pattern found at index " + i);
+      }
+
+      if (i < text.length() - m) {
+        textHash = updateHash(textHash, text.charAt(i), text.charAt(i + m), m); // update the hash , i index pe old char hai , i+m pe new char hai
+      }
+    }
+  }
+}
+public class Main {
+  public static void main(String[] args) {
+    KarpRabin algo = new KarpRabin();
+    algo.search("564122345", "1223");
+  }
+}
